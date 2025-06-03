@@ -14,11 +14,13 @@ canvas.style.height = `${canvasSize + extraCanvasSizeY}` + "px";
 canvas.width = canvasSize;
 canvas.height = canvasSize + extraCanvasSizeY;
 ctx.textAlign = "center";
+
+
 class Game {
     
     constructor() {
         this.gameStats = "screenInitial";
-        this.dificult = 3;
+        this.dificult = 1;
         this.score = 10;
         this.time = 0;
 
@@ -33,6 +35,7 @@ class Game {
 
         let sizeY = ctx.measureText(textPainel).actualBoundingBoxAscent;
         ctx.clearRect(0, 0, canvasSize, extraCanvasSizeY);
+        ctx.fillRect(0, extraCanvasSizeY, canvasSize, 1);
         ctx.fillText(textPainel, canvasSize / 2, (extraCanvasSizeY / 2) + (sizeY / 2));
     }
     calcTextStatistics() {
@@ -50,7 +53,7 @@ class Game {
 
     displayScreen() {
         this.eraseScreen();
-        switch (this.gameStats) {
+        switch (this.gameStats) { //fazer game over
             case "screenInitial":
                 console.log("na tela inicial");
                 this.setDrawPainel("Snake Game");
@@ -71,9 +74,11 @@ class Game {
                 this.buttonExitSettings.drawButton();
                 this.buttonExitSettings.startVerifyClick();
                 break;
+            case "gameOver":// a fazer
+                alert("voce murreu");
+                break;
         }
         ctx.fillStyle = "black";
-        ctx.fillRect(0, extraCanvasSizeY, canvasSize, 1);
     }
     eraseScreen() {
         ctx.clearRect(0, 0, canvasSize, canvasSize + extraCanvasSizeY);
@@ -123,7 +128,12 @@ class Game {
             snake.move();
             snake.draw();
         }, 1000 / this.dificult);
-        snake.startVerifyMove();
+        snake.startVerifyChangeMove();
+    }
+    gameOver() {
+        this.eraseScreen();
+        this.gameStats = "gameOver";
+        this.displayScreen();
     }
 }
 
@@ -164,12 +174,15 @@ class Button {
 
 class Snake {
     constructor() {
-        this.size = 20
-        this.positions = [[100, 100]];
+        this.size = 100;
+        this.positions = [[(canvasSize / 2) - (this.size / 2), extraCanvasSizeY]];
         this.direction = "right";
     }
+
     draw() {
+        ctx.fillStyle = "green";
         this.positions.forEach(position => {
+            console.log(position);
             ctx.fillRect(position[0], position[1], this.size, this.size);
         });
     }
@@ -190,10 +203,16 @@ class Snake {
                 break;
         }
         
-        this.positions.push(newPosition);
-        this.positions.shift(); // fazer verificacao se colidio com a maca
+        this.positions.unshift(newPosition);
+        if (this.verifyColliWall()) {
+            game.gameOver();
+        }
+        if (!this.verifyColliApple()) {
+            this.positions.pop();
+        }
     }
-    startVerifyMove() {
+
+    startVerifyChangeMove() {
         addEventListener("keydown", (event) => {
             switch (event.key) {
                 case "ArrowRight":
@@ -222,6 +241,21 @@ class Snake {
                     break;
             }
         });
+    }
+    verifyColliWall() {
+        if (
+            this.positions[0][0] < 0 ||
+            this.positions[0][0] > canvasSize - this.size ||
+            this.positions[0][1] < extraCanvasSizeY ||
+            this.positions[0][1] > canvasSize + extraCanvasSizeY - this.size
+        ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    verifyColliApple() {
+        
     }
     
 
