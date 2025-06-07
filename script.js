@@ -51,12 +51,6 @@ class Game {
                 snake.init((canvasSize / 2) - (game.proportion / 2), extraCanvasSizeY + (canvasSize / 2) - (game.proportion / 2), "up");
                 this.startGame();
                 break;
-            case "inSettings":
-                this.drawPainel("Settings");
-
-                this.buttonExitSettings.drawButton();
-                this.buttonExitSettings.startVerifyClick();
-                break;
             case "gameOver":
                 this.score = 0;
                 apples = [];
@@ -80,19 +74,14 @@ class Game {
 
     createButtons(size, positionInitial, distance) {
         this.buttonPlay = new Button("Play", size, [positionInitial[0], positionInitial[1] + (extraCanvasSizeY / 2)], "30px Arial", "black", "green");
-        this.buttonSettings = new Button("Settings", size, [positionInitial[0], positionInitial[1] + (extraCanvasSizeY / 2) + (1*size[1]) + (1*distance)], "30px Arial", "black", "green");
         this.buttonRestart = new Button("Restart", size, [positionInitial[0], positionInitial[1] + (extraCanvasSizeY / 2)], "30px Arial", "black", "green");
-        this.buttonExitSettings = new Button("ExitSettings", size, [positionInitial[0], 1.95*positionInitial[1] + (extraCanvasSizeY / 2)], "30px Arial", "black", "red");
-        this.buttons = [this.buttonPlay, this.buttonSettings, this.buttonRestart, this.buttonExitSettings];
+        this.buttons = [this.buttonPlay, this.buttonRestart];
     }
     buttonClicked(nameButton) {
         this.eraseScreen();
         switch (nameButton) {
             case "Play":
                 this.gameStats = "playing";
-                break;
-            case "Settings":
-                this.gameStats = "inSettings";
                 break;
             case "Restart":
                 this.gameStats = "screenInitial";
@@ -147,6 +136,9 @@ class Game {
             snake.readyToSetDirection = true;
             snake.move();
             snake.draw();
+            if (this.score >= 230) {
+                alert("voce ganhou");
+            }
         }, 1000 / this.frames);
     }
 
@@ -200,7 +192,7 @@ class Snake {
         this.positions = [[getApproximateNumber(pX, this.size), getApproximateNumber(pY, this.size) + extraCanvasSizeY]];
         this.direction = direction;
         this.readyToSetDirection = true;
-        snake.createBody(1);
+        snake.createBody(2);
     }
 
     createBody(size) {
