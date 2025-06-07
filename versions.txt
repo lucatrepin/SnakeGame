@@ -1,7 +1,5 @@
 #version 1.0.31052025
 Criar um jogo base da cobrinha inspirado em 'Snake';
 Ele deve ter tela de inicio, pausa e game over.
-Planejamento de jogo pra dar game over com 10min (600segundos);
-Com pocoes para reduzir o tempo total.
 Com score de 10 em 10.
 
